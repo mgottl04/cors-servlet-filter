@@ -33,8 +33,8 @@ How To Release
 From the command-line:
 
 ````
-mvn -Possrh -Psign -DpushChanges=false -DlocalCheckout=true -Darguments=-Dgpg.passphrase=thesecret release:clean release:prepare
-mvn -Possrh -Psign -DpushChanges=false -DlocalCheckout=true -Darguments=-Dgpg.passphrase=thesecret release:perform
+mvn -Possrh -Psign -DpushChanges=false -DlocalCheckout=true '-Darguments=-Dgpg.passphrase=thesecret -Dgpg.keyname=keyname' release:clean release:prepare
+mvn -Possrh -Psign -DpushChanges=false -DlocalCheckout=true '-Darguments=-Dgpg.passphrase=thesecret -Dgpg.keyname=keyname' release:perform
 ````
 
 Then push changes:
