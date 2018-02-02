@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.tasktop</groupId>
   <artifactId>cors-servlet-filter</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <name>CORS Header Scrutiny Filter</name>
   <description>Provides a ServletFilter that scrutinizes HTTP headers to guard against XSRF.</description>
   <url>https://github.com/Tasktop/cors-servlet-filter</url>
@@ -141,7 +141,7 @@
     <developerConnection>${scm.developerConnection}</developerConnection>
     <connection>scm:git://git@github.com:Tasktop/cors-servlet-filter.git</connection>
     <url>https://github.com/Tasktop/cors-servlet-filter.git</url>
-    <tag>cors-servlet-filter-1.0.0</tag>
+    <tag>HEAD</tag>
   </scm>
   <developers>
     <developer>
