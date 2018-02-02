@@ -20,12 +20,16 @@ In the web.xml of your Java web application:
 	</filter-mapping>
 ````
 
+This filter should be added at the top of the web.xml so that it is invoked before other filters.
+
 Building
 ========
 
 From the command-line:
 
 `mvn clean package`
+
+Build status on [Travis CI](https://travis-ci.org/Tasktop/cors-servlet-filter): ![CI status](https://travis-ci.org/Tasktop/cors-servlet-filter.svg?branch=master "CI Status") 
 
 How To Release
 --------------
