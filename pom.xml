@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.tasktop</groupId>
   <artifactId>cors-servlet-filter</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <name>CORS Header Scrutiny Filter</name>
   <description>Provides a ServletFilter that scrutinizes HTTP headers to guard against XSRF.</description>
   <url>https://github.com/Tasktop/cors-servlet-filter</url>
@@ -142,7 +141,7 @@
     <developerConnection>${scm.developerConnection}</developerConnection>
     <connection>scm:git://git@github.com:Tasktop/cors-servlet-filter.git</connection>
     <url>https://github.com/Tasktop/cors-servlet-filter.git</url>
-    <tag>HEAD</tag>
+    <tag>cors-servlet-filter-1.0.0</tag>
   </scm>
   <developers>
     <developer>
