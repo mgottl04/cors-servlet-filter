@@ -4,8 +4,33 @@ CORS Header Scrutiny Filter
 This project provides a CORS ([Cross-Origin Resource Sharing](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)) HTTP servlet filter to guard against XSRF ([Cross-Site Request Forgery](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29)).
 The approach taken here is based on [CORS Origin Header Scrutiny (OWASP)](https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny).
 
+How It Works
+============
+
+The `CorsHeaderScrutinyServletFilter` inspects the HTTP headers to guard against XSRF.  The following HTTP headers are scrutinized:
+
+* Host
+* X-Forwarded-Host
+* Origin
+* Referer
+
+If provided, the hostname of the Origin and Referer headers must match the hostname provided in the X-Forwarded-Host and Host headers.
+This ensures that JavaScript invoking HTTP requests must originate from the same host as the web application.
+
+The approach taken here differs from the [OWASP Countermeasure option B](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29) by requiring zero configuration, i.e. there is no need to provide a list of allowed hosts. 
+
 How to Use
 ==========
+
+Add the dependency to your pom.xml:
+
+````
+    <dependency>
+      <groupId>com.tasktop</groupId>
+      <artifactId>cors-servlet-filter</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+````
 
 In the web.xml of your Java web application:
 
