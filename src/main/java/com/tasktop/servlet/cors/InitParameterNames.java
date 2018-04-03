@@ -15,11 +15,11 @@
  *******************************************************************************/
 package com.tasktop.servlet.cors;
 
-class ForbiddenException extends RuntimeException {
+class InitParameterNames {
 
-	private static final long serialVersionUID = 1L;
+	public static final String EXCLUSION_PATHS = "exclusion-paths";
 
-	ForbiddenException(String message) {
-		super(message);
+	private InitParameterNames() {
+		// prevent instantiation
 	}
 }

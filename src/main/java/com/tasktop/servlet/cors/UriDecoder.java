@@ -15,11 +15,17 @@
  *******************************************************************************/
 package com.tasktop.servlet.cors;
 
-class ForbiddenException extends RuntimeException {
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
-	private static final long serialVersionUID = 1L;
+class UriDecoder {
 
-	ForbiddenException(String message) {
-		super(message);
+	public static String decode(String path) {
+		try {
+			return URLDecoder.decode(path, StandardCharsets.UTF_8.name());
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
