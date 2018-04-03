@@ -17,7 +17,7 @@ The `CorsHeaderScrutinyServletFilter` inspects the HTTP headers to guard against
 If provided, the hostname of the Origin and Referer headers must match the hostname provided in the X-Forwarded-Host and Host headers.
 This ensures that JavaScript invoking HTTP requests must originate from the same host as the web application.
 
-The approach taken here differs from the [OWASP Countermeasure option B](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29) by requiring zero configuration, i.e. there is no need to provide a list of allowed hosts. 
+The approach taken here differs from the [OWASP Countermeasure option B](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29) by requiring zero configuration, i.e. there is no need to provide a list of allowed hosts.
 
 How to Use
 ==========
@@ -28,7 +28,7 @@ Add the dependency to your pom.xml:
     <dependency>
       <groupId>com.tasktop</groupId>
       <artifactId>cors-servlet-filter</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1</version>
     </dependency>
 ````
 
@@ -99,7 +99,7 @@ From the command-line:
 
 `mvn clean package`
 
-Build status on [Travis CI](https://travis-ci.org/Tasktop/cors-servlet-filter): ![CI status](https://travis-ci.org/Tasktop/cors-servlet-filter.svg?branch=master "CI Status") 
+Build status on [Travis CI](https://travis-ci.org/Tasktop/cors-servlet-filter): ![CI status](https://travis-ci.org/Tasktop/cors-servlet-filter.svg?branch=master "CI Status")
 
 How To Release
 --------------
