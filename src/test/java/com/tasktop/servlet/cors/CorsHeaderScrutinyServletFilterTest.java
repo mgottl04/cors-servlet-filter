@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Tasktop Technologies.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
 package com.tasktop.servlet.cors;
 
 import static org.mockito.Matchers.any;
@@ -39,7 +54,7 @@ public class CorsHeaderScrutinyServletFilterTest {
 
 	private final HttpServletRequest request = mock(HttpServletRequest.class);
 
-	private final CorsHeaderScrutinyServletFilter filter = new CorsHeaderScrutinyServletFilter();
+	private CorsHeaderScrutinyServletFilter filter = new CorsHeaderScrutinyServletFilter();
 
 	private final FilterChain chain = mock(FilterChain.class);
 
@@ -61,8 +76,7 @@ public class CorsHeaderScrutinyServletFilterTest {
 	@Test
 	public void doFilterAcceptsRequestWithoutOriginOrReferer() throws IOException, ServletException {
 		filter.doFilter(request, response, chain);
-		verify(chain).doFilter(request, response);
-		verifyNoMoreInteractions(chain);
+		expectAccepted();
 	}
 
 	@Test
@@ -94,8 +108,7 @@ public class CorsHeaderScrutinyServletFilterTest {
 		mockHeader(HTTP_HEADER_HOST, "a-different-host");
 		mockHeader(HTTP_HEADER_X_FORWARDED_HOST, "a-host");
 		filter.doFilter(request, response, chain);
-		verify(chain).doFilter(request, response);
-		verifyNoMoreInteractions(chain);
+		expectAccepted();
 	}
 
 	@Test
@@ -129,8 +142,7 @@ public class CorsHeaderScrutinyServletFilterTest {
 		mockHeader(HTTP_HEADER_ORIGIN, "http://a-host");
 		mockHeader(HTTP_HEADER_HOST, "a-host");
 		filter.doFilter(request, response, chain);
-		verify(chain).doFilter(request, response);
-		verifyNoMoreInteractions(chain);
+		expectAccepted();
 	}
 
 	@Test
@@ -138,8 +150,7 @@ public class CorsHeaderScrutinyServletFilterTest {
 		mockHeader(HTTP_HEADER_ORIGIN, "http://a-host:8080");
 		mockHeader(HTTP_HEADER_HOST, "a-host:8080");
 		filter.doFilter(request, response, chain);
-		verify(chain).doFilter(request, response);
-		verifyNoMoreInteractions(chain);
+		expectAccepted();
 	}
 
 	@Test
@@ -147,8 +158,7 @@ public class CorsHeaderScrutinyServletFilterTest {
 		mockHeader(HTTP_HEADER_ORIGIN, "http://a-host:9999");
 		mockHeader(HTTP_HEADER_HOST, "a-host:8080");
 		filter.doFilter(request, response, chain);
-		verify(chain).doFilter(request, response);
-		verifyNoMoreInteractions(chain);
+		expectAccepted();
 	}
 
 	@Test
@@ -169,6 +179,28 @@ public class CorsHeaderScrutinyServletFilterTest {
 	public void doFilterRejectsRequestWithRefererWithDifferentHost() throws IOException, ServletException {
 		mockHeader(HTTP_HEADER_REFERER, "http://a-host/some/path");
 		mockHeader(HTTP_HEADER_HOST, "a-different-host");
+		filter.doFilter(request, response, chain);
+		expectForbidden();
+	}
+
+	@Test
+	public void doFilterAcceptsRequestWithRefererWithDifferentHostOnExcludedPath()
+			throws IOException, ServletException {
+		filter = newFilterWithExcludedPath("/a-path");
+		mockHeader(HTTP_HEADER_REFERER, "http://a-host/some/path");
+		mockHeader(HTTP_HEADER_HOST, "a-different-host");
+		mockRequestUri("", "/a-path");
+		filter.doFilter(request, response, chain);
+		expectAccepted();
+	}
+
+	@Test
+	public void doFilterRejectsRequestWithRefererWithDifferentHostOnExcludedPath()
+			throws IOException, ServletException {
+		filter = newFilterWithExcludedPath("/a-path");
+		mockHeader(HTTP_HEADER_REFERER, "http://a-host/some/path");
+		mockHeader(HTTP_HEADER_HOST, "a-different-host");
+		mockRequestUri("", "/a-different-path");
 		filter.doFilter(request, response, chain);
 		expectForbidden();
 	}
@@ -195,8 +227,7 @@ public class CorsHeaderScrutinyServletFilterTest {
 		mockHeader(HTTP_HEADER_REFERER, "http://a-host/some/path");
 		mockHeader(HTTP_HEADER_HOST, "a-host");
 		filter.doFilter(request, response, chain);
-		verify(chain).doFilter(request, response);
-		verifyNoMoreInteractions(chain);
+		expectAccepted();
 	}
 
 	@Test
@@ -205,8 +236,25 @@ public class CorsHeaderScrutinyServletFilterTest {
 		mockHeader(HTTP_HEADER_ORIGIN, "http://a-host");
 		mockHeader(HTTP_HEADER_HOST, "a-host");
 		filter.doFilter(request, response, chain);
+		expectAccepted();
+	}
+
+	private void mockRequestUri(String contextPath, String requestPath) {
+		doReturn(contextPath).when(request).getContextPath();
+		doReturn(requestPath).when(request).getRequestURI();
+	}
+
+	private CorsHeaderScrutinyServletFilter newFilterWithExcludedPath(String pathPrefix) throws ServletException {
+		CorsHeaderScrutinyServletFilter filter = new CorsHeaderScrutinyServletFilter();
+		FilterConfig config = mock(FilterConfig.class);
+		doReturn(pathPrefix).when(config).getInitParameter(InitParameterNames.EXCLUSION_PATHS);
+		filter.init(config);
+		return filter;
+	}
+
+	private void expectAccepted() throws IOException, ServletException {
 		verify(chain).doFilter(request, response);
-		verifyNoMoreInteractions(chain);
+		verifyNoMoreInteractions(chain, response);
 	}
 
 	private void expectForbidden() throws IOException {

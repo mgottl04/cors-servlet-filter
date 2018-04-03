@@ -39,21 +39,30 @@ public class CorsHeaderScrutinyServletFilter implements Filter {
 	private static final String HEADER_ORIGIN = "Origin";
 	private static final String HEADER_REFERER = "Referer";
 
+	private Optional<RequestPathMatcher> requestExclusionMatcher = Optional.empty();
+
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		// nothing to do
+		requestExclusionMatcher = readPathExclusionParameter(filterConfig);
 	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		try {
-			checkRequestHeaders((HttpServletRequest) request);
-		} catch (ForbiddenException e) {
-			((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
-			return;
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		if (!isRequestExcluded(httpRequest)) {
+			try {
+				checkRequestHeaders(httpRequest);
+			} catch (ForbiddenException e) {
+				((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+				return;
+			}
 		}
 		chain.doFilter(request, response);
+	}
+
+	private boolean isRequestExcluded(HttpServletRequest httpRequest) {
+		return requestExclusionMatcher.map(matcher -> matcher.matches(httpRequest)).orElse(false);
 	}
 
 	private void checkRequestHeaders(HttpServletRequest request) {
@@ -110,5 +119,10 @@ public class CorsHeaderScrutinyServletFilter implements Filter {
 	@Override
 	public void destroy() {
 		// nothing to do
+	}
+
+	private Optional<RequestPathMatcher> readPathExclusionParameter(FilterConfig filterConfig) {
+		return Optional.ofNullable(filterConfig.getInitParameter(InitParameterNames.EXCLUSION_PATHS))
+				.map(ConfigurationParameterParser::parseExclusionPaths).map(RequestPathMatcher::new);
 	}
 }

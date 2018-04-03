@@ -47,6 +47,51 @@ In the web.xml of your Java web application:
 
 This filter should be added at the top of the web.xml so that it is invoked before other filters.
 
+Excluding Paths
+---------------
+
+The servlet filter may be configured to exclude requests on specific paths by specifying the **exclusion-paths** init parameter. Requests to excluded paths are passed through the filter without inspecting headers.
+
+Values specified via **exclusion-paths** are a list of comma or whitespace separated values for prefixing request paths to exclude.
+e.g. `/api/` will exclude `/api/some/endpoint/here` from the filter. If a path specified does not start with `/`, the slash will be added automatically.
+
+
+````
+	<filter>
+		<filter-name>CORSFilter</filter-name>
+		<filter-class>com.tasktop.servlet.cors.CorsHeaderScrutinyServletFilter</filter-class>
+		<init-param>
+			<param-name>exclusion-paths</param-name>
+			<param-value>
+				/api/one/
+				/api/two
+				other/api
+			</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CORSFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+````
+
+The paths specified in the **exclusion-paths** must not contain the context path, as it is removed when checking the request URI.
+
+For example, with the above configuration and the context path `/path` the following HTTP requests would skip the header check:
+
+* `GET /path/api/one/example-suffix`
+* `GET /path/api/two`
+* `GET /path/api/two/with-suffix`
+* `POST /path/other/api-with-any-suffix`
+
+The following HTTP requests would not skip the header check:
+
+* `GET /path/api/one`
+* `GET /path/some/other/path`
+* `GET /path/`
+* `GET /path/some/other/api`
+* `DELETE /path/api/three`
+
 Building
 ========
 

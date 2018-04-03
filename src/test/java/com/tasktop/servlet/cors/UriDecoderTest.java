@@ -15,11 +15,25 @@
  *******************************************************************************/
 package com.tasktop.servlet.cors;
 
-class ForbiddenException extends RuntimeException {
+import static org.assertj.core.api.Assertions.assertThat;
 
-	private static final long serialVersionUID = 1L;
+import org.junit.Test;
 
-	ForbiddenException(String message) {
-		super(message);
+public class UriDecoderTest {
+
+	@Test
+	public void decode() {
+		assertThat(UriDecoder.decode("a path")).isEqualTo("a path");
+	}
+
+	@Test
+	public void decodeEmpty() {
+		assertThat(UriDecoder.decode("")).isEqualTo("");
+	}
+
+	@Test
+	public void decodePathWithEncodedSpaces() {
+		assertThat(UriDecoder.decode("one%20two")).isEqualTo("one two");
+		assertThat(UriDecoder.decode("one+two")).isEqualTo("one two");
 	}
 }

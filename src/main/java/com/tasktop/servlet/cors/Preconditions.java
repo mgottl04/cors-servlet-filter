@@ -15,11 +15,15 @@
  *******************************************************************************/
 package com.tasktop.servlet.cors;
 
-class ForbiddenException extends RuntimeException {
+class Preconditions {
 
-	private static final long serialVersionUID = 1L;
+	public static void checkArgument(boolean condition) {
+		if (!condition) {
+			throw new IllegalArgumentException();
+		}
+	}
 
-	ForbiddenException(String message) {
-		super(message);
+	private Preconditions() {
+		// prevent instantiation
 	}
 }
