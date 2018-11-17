@@ -60,6 +60,7 @@ public class CorsHeaderScrutinyServletFilterTest {
 
 	@Before
 	public void before() {
+		doReturn("POST").when(request).getMethod();
 		doReturn(Collections.emptyEnumeration()).when(request).getHeaders(any());
 	}
 
@@ -94,13 +95,21 @@ public class CorsHeaderScrutinyServletFilterTest {
 	}
 
 	@Test
-	public void doFilterRejectsRequestWithOriginWithDifferentHost() throws IOException, ServletException {
+	public void doFilterRejectsPostRequestWithOriginWithDifferentHost() throws IOException, ServletException {
 		mockHeader(HTTP_HEADER_ORIGIN, "http://a-host");
 		mockHeader(HTTP_HEADER_HOST, "a-different-host");
 		filter.doFilter(request, response, chain);
 		expectForbidden();
 	}
 
+	@Test
+	public void doFilterAcceptsGetRequestWithOriginWithDifferentHost() throws IOException, ServletException {
+		doReturn("get").when(request).getMethod();
+		mockHeader(HTTP_HEADER_ORIGIN, "http://a-host");
+		mockHeader(HTTP_HEADER_HOST, "a-different-host");
+		filter.doFilter(request, response, chain);
+		expectAccepted();
+	}
 	@Test
 	public void doFilterAcceptsRequestWithOriginWithDifferentHostAndMatchingXForwardedHost()
 			throws IOException, ServletException {

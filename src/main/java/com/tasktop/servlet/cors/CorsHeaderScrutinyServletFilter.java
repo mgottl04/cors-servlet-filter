@@ -65,6 +65,10 @@ public class CorsHeaderScrutinyServletFilter implements Filter {
 		return requestExclusionMatcher.map(matcher -> matcher.matches(httpRequest)).orElse(false);
 	}
 
+	private Boolean isGetRequest(HttpServletRequest httpRequest) {
+		return httpRequest.getMethod().equalsIgnoreCase("get");
+	}
+
 	private void checkRequestHeaders(HttpServletRequest request) {
 		getSingleHeader(request, HEADER_ORIGIN).ifPresent(headerValue -> validateUriHeader(request, headerValue));
 		getSingleHeader(request, HEADER_REFERER).ifPresent(headerValue -> validateUriHeader(request, headerValue));
@@ -75,7 +79,9 @@ public class CorsHeaderScrutinyServletFilter implements Filter {
 		String hostHeader = getEffectiveHostHeader(request);
 		checkNotEmpty(hostHeader);
 		URI uri = URI.create(headerValue);
-		checkHost(hostHeader, uri.getHost());
+		if (!isGetRequest(request)){
+			checkHost(hostHeader, uri.getHost());
+		}
 	}
 
 	private String getEffectiveHostHeader(HttpServletRequest request) {
