@@ -2,11 +2,10 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.tasktop</groupId>
   <artifactId>cors-servlet-filter</artifactId>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.0.3-SNAPSHOT</version>
   <name>CORS Header Scrutiny Filter</name>
   <description>Provides a ServletFilter that scrutinizes HTTP headers to guard against XSRF.</description>
   <url>https://github.com/Tasktop/cors-servlet-filter</url>
-
 
   <profiles>
     <profile>
